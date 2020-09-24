@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Signe;
 use App\Form\SigneType;
+use Cassandra\Date;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +39,21 @@ class SigneController extends AbstractController
 
         return $this->render('signe/ajouter.html.twig', [
             "signeForm" => $signeForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("signe/deviner", name="signe_deviner")
+     */
+    public function deviner(){
+        $dateAnniversaire = new DateTime('2015-08-10');
+        $signeRepo = $this->getDoctrine()->getRepository(Signe::class);
+        $signes = $signeRepo->findByDateAnniv($dateAnniversaire);
+
+        dump($signes);
+
+        return $this->render('signe/deviner.html.twig', [
+            "signes" => $signes
         ]);
     }
 }

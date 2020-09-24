@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Signe;
+use Cassandra\Date;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +48,15 @@ class SigneRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByDateAnniv(\DateTime $uneDateAnniv)
+    {
+        $qb = $this->createQueryBuilder('signe');
+        $qb->andWhere('signe.dateDebut < :uneDateAnniv')->andWhere('signe.dateFin > :uneDateAnniv');
+        $qb->setParameter('uneDateAnniv', $uneDateAnniv);
+        $qb->setMaxResults(1);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
 }
